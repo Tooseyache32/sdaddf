@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-диагностика — Точка Пая</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #00a8cc;
+            --accent: #ff6b35;
+            --bg: #0a0e17;
+            --bg-light: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.1);
+            --glass: rgba(17, 24, 39, 0.6);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 4px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active { color: var(--primary); }
+        .nav-links a.active::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            padding: 10rem 5% 4rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .page-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Main Layout */
+        .diagnostic-layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 6rem;
+            align-items: start;
+        }
+
+        /* Form Sections */
+        .form-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .form-card:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .form-step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .step-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.2rem;
+        }
+
+        /* Device Selector */
+        .device-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .device-option {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .device-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .device-option.selected {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+        }
+
+        .device-option.selected::after {
+            content: '00c';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            background: var(--primary);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .device-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .device-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Select & Input Styles */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-select, .form-input, .form-textarea {
+            width: 100%;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-select:focus, .form-input:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-select option {
+            background: var(--bg-light);
+            color: var(--text);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        /* Symptoms */
+        .symptoms-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .symptom-check {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .symptom-check:hover {
+            border-color: var(--primary);
+        }
+
+        .symptom-check input[type="checkbox"] {
+            display: none;
+        }
+
+        .check-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--text-muted);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .symptom-check.checked .check-box {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--bg);
+        }
+
+        .symptom-check.checked {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .symptom-text {
+            font-size: 0.9rem;
+        }
+
+        /* Drop Zone */
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: var(--bg-light);
+        }
+
+        .drop-zone:hover, .drop-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .drop-zone i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .drop-zone p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .drop-zone .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .preview-item {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-item .remove-file {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 24px;
+            height: 24px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        /* Calculator Sidebar */
+        .calculator-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+        }
+
+        .calc-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .calc-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .calc-header h3 {
+            font-size: 1.1rem;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .calc-row .label {
+            color: var(--text-muted);
+        }
+
+        .calc-row .value {
+            font-weight: 600;
+        }
+
+        .calc-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-top: 0.5rem;
+        }
+
+        .calc-total .label {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .calc-total .value {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .calc-range {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: -0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .calc-note {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 4rem 5%;
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03), transparent);
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .steps-grid::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            opacity: 0.3;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 24px;
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin: 0 auto 1.5rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .step-card:hover .step-icon {
+            border-color: var(--primary);
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .step-num {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 800;
+        }
+
+        .step-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 5%;
+            background: var(--bg-light);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .diagnostic-layout {
+                grid-template-columns: 1fr;
+            }
+            .calculator-card {
+                position: static;
+                order: -1;
+                margin-bottom: 2rem;
+            }
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .steps-grid::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .page-hero h1 { font-size: 2.5rem; }
+            .device-grid { grid-template-columns: repeat(2, 1fr); }
+            .symptoms-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
+            .preview-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero h1 { font-size: 2rem; }
+            .form-card { padding: 1.5rem; }
+            .device-grid { grid-template-columns: 1fr; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="tochka_paya_index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+            Точка Пая
+        </a>
+        <ul class="nav-links">
+            <li><a href="tochka_paya_index.html">Главная</a></li>
+            <li><a href="tochka_paya_uslugi.html">Услуги</a></li>
+            <li><a href="tochka_paya_diagnostika.html">Диагностика</a></li>
+            <li><a href="tochka_paya_status.html">Статус</a></li>
+            <li><a href="tochka_paya_about.html">О нас</a></li>
+            <li><a href="tochka_paya_shop.html">Магазин</a></li>
+            <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+        </ul>
+        <button class="nav-cta"><i class="fab fa-telegram-plane"></i> Написать</button>
+        <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Онлайн-диагностика</h1>
+        <p>Опишите проблему — наш мастер оценит стоимость ремонта за 5 минут. Бесплатно и без обязательств.</p>
+    </section>
+
+    <!-- Main Form + Calculator -->
+    <div class="diagnostic-layout">
+        <!-- Left: Form -->
+        <div class="form-content">
+            <!-- Step 1: Device Type -->
+            <div class="form-card reveal">
+                <div class="form-step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <div class="step-title">Выберите устройство</div>
+                        <div class="step-desc">Что именно нужно починить?</div>
+                    </div>
+                </div>
+                <div class="device-grid">
+                    <div class="device-option selected" data-device="phone" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-mobile-screen"></i></div>
+                        <div class="device-name">Смартфон</div>
+                    </div>
+                    <div class="device-option" data-device="laptop" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-laptop"></i></div>
+                        <div class="device-name">Ноутбук</div>
+                    </div>
+                    <div class="device-option" data-device="tablet" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-tablet-screen-button"></i></div>
+                        <div class="device-name">Планшет</div>
+                    </div>
+                    <div class="device-option" data-device="console" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-gamepad"></i></div>
+                        <div class="device-name">Приставка</div>
+                    </div>
+                    <div class="device-option" data-device="audio" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-headphones"></i></div>
+                        <div class="device-name">Наушники</div>
+                    </div>
+                    <div class="device-option" data-device="other" onclick="selectDevice(this)">
+                        <div class="device-icon"><i class="fas fa-microchip"></i></div>
+                        <div class="device-name">Другое</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Brand & Model -->
+            <div class="form-card reveal">
+                <div class="form-step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <div class="step-title">Модель устройства</div>
+                        <div class="step-desc">Выберите бренд и модель для точной оценки</div>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div class="form-group">
+                        <label class="form-label">Бренд</label>
+                        <select class="form-select" id="brandSelect" onchange="updateModels()">
+                            <option value="">Выберите бренд</option>
+                            <option value="apple">Apple</option>
+                            <option value="samsung">Samsung</option>
+                            <option value="xiaomi">Xiaomi</option>
+                            <option value="google">Google</option>
+                            <option value="asus">ASUS</option>
+                            <option value="sony">Sony</option>
+                            <option value="huawei">Huawei</option>
+                            <option value="other">Другой</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Модель</label>
+                        <select class="form-select" id="modelSelect">
+                            <option value="">Сначала выберите бренд</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Или введите вручную</label>
+                    <input type="text" class="form-input" id="manualModel" placeholder="Например: iPhone 15 Pro 256GB">
+                </div>
+            </div>
+
+            <!-- Step 3: Problem -->
+            <div class="form-card reveal">
+                <div class="form-step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <div class="step-title">Опишите проблему</div>
+                        <div class="step-desc">Отметьте симптомы или опишите своими словами</div>
+                    </div>
+                </div>
+                <div class="symptoms-grid" id="symptomsGrid">
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="screen">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Разбит экран / нет изображения</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="battery">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Быстро разряжается / не заряжается</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="water">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Попала вода / утоплен</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="sound">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Нет звука / шум в динамике</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="power">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Не включается / перезагружается</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="camera">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Не работает камера</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="network">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Нет сети / Wi-Fi / Bluetooth</span>
+                    </label>
+                    <label class="symptom-check" onclick="toggleSymptom(this)">
+                        <input type="checkbox" value="other">
+                        <div class="check-box"><i class="fas fa-check"></i></div>
+                        <span class="symptom-text">Другое (опишу ниже)</span>
+                    </label>
+                </div>
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label class="form-label">Подробное описание</label>
+                    <textarea class="form-textarea" id="description" placeholder="Опишите, когда появилась проблема, что предшествовало (падение, вода, обновление и т.д.)"></textarea>
+                </div>
+            </div>
+
+            <!-- Step 4: Photos -->
+            <div class="form-card reveal">
+                <div class="form-step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <div class="step-title">Прикрепите фото</div>
+                        <div class="step-desc">Фото повреждений помогут точнее оценить стоимость</div>
+                    </div>
+                </div>
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Перетащите фото сюда или нажмите для выбора</p>
+                    <div class="hint">JPG, PNG до 10 МБ, максимум 4 файла</div>
+                </div>
+                <input type="file" class="file-input" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+                <div class="preview-grid" id="previewGrid"></div>
+            </div>
+
+            <!-- Step 5: Contacts -->
+            <div class="form-card reveal">
+                <div class="form-step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <div class="step-title">Ваши контакты</div>
+                        <div class="step-desc">Куда отправить оценку стоимости?</div>
+                    </div>
+                </div>
+                <div class="two-col">
+                    <div class="form-group">
+                        <label class="form-label">Имя</label>
+                        <input type="text" class="form-input" id="userName" placeholder="Александр">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Телефон</label>
+                        <input type="tel" class="form-input" id="userPhone" placeholder="+7 (999) 000-00-00">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email (необязательно)</label>
+                    <input type="email" class="form-input" id="userEmail" placeholder="alex@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Удобный способ связи</label>
+                    <div class="symptoms-grid" style="grid-template-columns: repeat(3, 1fr);">
+                        <label class="symptom-check checked" onclick="toggleSingle(this, 'contact')">
+                            <input type="radio" name="contact" value="phone" checked>
+                            <div class="check-box"><i class="fas fa-check"></i></div>
+                            <span class="symptom-text">Звонок</span>
+                        </label>
+                        <label class="symptom-check" onclick="toggleSingle(this, 'contact')">
+                            <input type="radio" name="contact" value="whatsapp">
+                            <div class="check-box"><i class="fas fa-check"></i></div>
+                            <span class="symptom-text">WhatsApp</span>
+                        </label>
+                        <label class="symptom-check" onclick="toggleSingle(this, 'contact')">
+                            <input type="radio" name="contact" value="telegram">
+                            <div class="check-box"><i class="fas fa-check"></i></div>
+                            <span class="symptom-text">Telegram</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Calculator -->
+        <div class="calculator-card reveal">
+            <div class="calc-header">
+                <i class="fas fa-calculator"></i>
+                <div>
+                    <h3>Предварительная оценка</h3>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Обновляется в реальном времени</div>
+                </div>
+            </div>
+
+            <div class="calc-row">
+                <span class="label">Тип устройства</span>
+                <span class="value" id="calcDevice">Смартфон</span>
+            </div>
+            <div class="calc-row">
+                <span class="label">Бренд</span>
+                <span class="value" id="calcBrand">—</span>
+            </div>
+            <div class="calc-row">
+                <span class="label">Выбрано симптомов</span>
+                <span class="value" id="calcSymptoms">0</span>
+            </div>
+            <div class="calc-row">
+                <span class="label">Базовая диагностика</span>
+                <span class="value" style="color: var(--success);">Бесплатно</span>
+            </div>
+            <div class="calc-row">
+                <span class="label">Работа мастера</span>
+                <span class="value" id="calcWork">—</span>
+            </div>
+            <div class="calc-row">
+                <span class="label">Запчасти (примерно)</span>
+                <span class="value" id="calcParts">—</span>
+            </div>
+
+            <div class="calc-total">
+                <span class="label">Итого ориентировочно</span>
+                <span class="value" id="calcTotal">—</span>
+            </div>
+            <div class="calc-range">Точная стоимость после очной диагностики</div>
+
+            <button class="submit-btn" id="submitBtn" onclick="submitForm()">
+                <i class="fas fa-paper-plane"></i>
+                Отправить заявку
+            </button>
+            <div class="calc-note">
+                <i class="fas fa-lock" style="margin-right: 0.3rem;"></i>
+                Данные защищены и не передаются третьим лицам
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <h2 class="reveal">Как это работает</h2>
+        <div class="steps-grid">
+            <div class="step-card reveal">
+                <div class="step-icon">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <div class="step-num">1</div>
+                </div>
+                <h3>Оставляете заявку</h3>
+                <p>Заполняете форму за 2 минуты — описываете проблему и прикрепляете фото</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-icon">
+                    <i class="fas fa-phone-alt"></i>
+                    <div class="step-num">2</div>
+                </div>
+                <h3>Мастер звонит</h3>
+                <p>Перезваниваем в течение 5 минут, уточняем детали и называем цену</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-icon">
+                    <i class="fas fa-truck"></i>
+                    <div class="step-num">3</div>
+                </div>
+                <h3>Забираем / привозите</h3>
+                <p>Курьер забирает устройство или вы приезжаете к нам — как удобно</p>
+            </div>
+            <div class="step-card reveal">
+                <div class="step-icon">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="step-num">4</div>
+                </div>
+                <h3>Ремонт и возврат</h3>
+                <p>Чиним, тестируем и возвращаем с гарантией до 90 дней</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="tochka_paya_index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+                    Точка Пая
+                </a>
+                <p>Современный сервисный центр по ремонту электроники. Работаем с 2019 года, чиним всё — от наушников до игровых станций.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Услуги</h4>
+                <ul>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт смартфонов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт ноутбуков</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт планшетов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Игровые приставки</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="tochka_paya_about.html">О нас</a></li>
+                    <li><a href="tochka_paya_about.html#team">Мастера</a></li>
+                    <li><a href="tochka_paya_index.html#reviews">Отзывы</a></li>
+                    <li><a href="tochka_paya_contacts.html">Вакансии</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Помощь</h4>
+                <ul>
+                    <li><a href="tochka_paya_status.html">Статус ремонта</a></li>
+                    <li><a href="tochka_paya_contacts.html">Гарантия</a></li>
+                    <li><a href="tochka_paya_contacts.html">Доставка</a></li>
+                    <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Точка Пая. Все права защищены.</div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Device selection
+        let selectedDevice = 'phone';
+        const devicePrices = {
+            phone: { work: '1 500 ₽', baseParts: '5 000 ₽', name: 'Смартфон' },
+            laptop: { work: '3 000 ₽', baseParts: '8 000 ₽', name: 'Ноутбук' },
+            tablet: { work: '2 000 ₽', baseParts: '6 000 ₽', name: 'Планшет' },
+            console: { work: '2 500 ₽', baseParts: '4 000 ₽', name: 'Приставка' },
+            audio: { work: '1 000 ₽', baseParts: '2 500 ₽', name: 'Наушники' },
+            other: { work: '1 500 ₽', baseParts: '3 000 ₽', name: 'Другое' }
+        };
+
+        function selectDevice(el) {
+            document.querySelectorAll('.device-option').forEach(d => d.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedDevice = el.getAttribute('data-device');
+            updateCalculator();
+        }
+
+        // Models data
+        const models = {
+            apple: ['iPhone 15 Pro Max', 'iPhone 15 Pro', 'iPhone 15', 'iPhone 14 Pro Max', 'iPhone 14', 'iPhone 13', 'iPad Pro 12.9', 'iPad Air', 'MacBook Air M2', 'MacBook Pro 14'],
+            samsung: ['Galaxy S24 Ultra', 'Galaxy S24+', 'Galaxy S24', 'Galaxy Z Fold 5', 'Galaxy Z Flip 5', 'Galaxy Tab S9'],
+            xiaomi: ['Xiaomi 14 Ultra', 'Xiaomi 14', 'Redmi Note 13 Pro', 'Poco F6 Pro'],
+            google: ['Pixel 8 Pro', 'Pixel 8', 'Pixel 7a'],
+            asus: ['ROG Phone 8', 'Zenfone 10', 'ROG Ally'],
+            sony: ['Xperia 1 VI', 'PlayStation 5', 'WH-1000XM5'],
+            huawei: ['Mate 60 Pro', 'P60 Pro', 'MatePad Pro'],
+            other: ['Другая модель']
+        };
+
+        function updateModels() {
+            const brand = document.getElementById('brandSelect').value;
+            const modelSelect = document.getElementById('modelSelect');
+            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            if (brand && models[brand]) {
+                models[brand].forEach(m => {
+                    modelSelect.innerHTML += `<option value="${m}">${m}</option>`;
+                });
+            }
+            updateCalculator();
+        }
+
+        // Symptoms
+        let selectedSymptoms = [];
+        function toggleSymptom(el) {
+            const checkbox = el.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            el.classList.toggle('checked', checkbox.checked);
+
+            const value = checkbox.value;
+            if (checkbox.checked) {
+                if (!selectedSymptoms.includes(value)) selectedSymptoms.push(value);
+            } else {
+                selectedSymptoms = selectedSymptoms.filter(s => s !== value);
+            }
+            updateCalculator();
+        }
+
+        function toggleSingle(el, group) {
+            document.querySelectorAll(`input[name="${group}"]`).forEach(input => {
+                input.closest('.symptom-check').classList.remove('checked');
+            });
+            el.classList.add('checked');
+            el.querySelector('input').checked = true;
+        }
+
+        // File upload
+        let uploadedFiles = [];
+        const dropZone = document.getElementById('dropZone');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        function handleFiles(files) {
+            const previewGrid = document.getElementById('previewGrid');
+            Array.from(files).slice(0, 4 - uploadedFiles.length).forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    uploadedFiles.push(file);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const div = document.createElement('div');
+                        div.className = 'preview-item';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" alt="preview">
+                            <button class="remove-file" onclick="removeFile(this)"><i class="fas fa-times"></i></button>
+                        `;
+                        previewGrid.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function removeFile(btn) {
+            const item = btn.closest('.preview-item');
+            const index = Array.from(item.parentElement.children).indexOf(item);
+            uploadedFiles.splice(index, 1);
+            item.remove();
+        }
+
+        // Calculator
+        function updateCalculator() {
+            const deviceData = devicePrices[selectedDevice];
+            const brand = document.getElementById('brandSelect').value;
+            const brandNames = {
+                apple: 'Apple', samsung: 'Samsung', xiaomi: 'Xiaomi',
+                google: 'Google', asus: 'ASUS', sony: 'Sony',
+                huawei: 'Huawei', other: 'Другой'
+            };
+
+            document.getElementById('calcDevice').textContent = deviceData.name;
+            document.getElementById('calcBrand').textContent = brand ? brandNames[brand] : '—';
+            document.getElementById('calcSymptoms').textContent = selectedSymptoms.length;
+            document.getElementById('calcWork').textContent = deviceData.work;
+
+            // Calculate parts cost based on symptoms
+            let partsMultiplier = 1;
+            if (selectedSymptoms.includes('screen')) partsMultiplier += 2.5;
+            if (selectedSymptoms.includes('water')) partsMultiplier += 1.5;
+            if (selectedSymptoms.includes('battery')) partsMultiplier += 0.8;
+            if (selectedSymptoms.includes('power')) partsMultiplier += 1.2;
+            if (selectedSymptoms.includes('camera')) partsMultiplier += 0.9;
+            if (selectedSymptoms.includes('sound')) partsMultiplier += 0.5;
+            if (selectedSymptoms.includes('network')) partsMultiplier += 0.7;
+            if (selectedSymptoms.includes('other')) partsMultiplier += 0.3;
+
+            const baseParts = parseInt(deviceData.baseParts.replace(/\D/g, ''));
+            const partsMin = Math.round(baseParts * (partsMultiplier > 1 ? partsMultiplier * 0.6 : 0.3));
+            const partsMax = Math.round(baseParts * partsMultiplier);
+
+            document.getElementById('calcParts').textContent = partsMin > 0 ? `${partsMin.toLocaleString()} — ${partsMax.toLocaleString()} ₽` : '—';
+
+            const workMin = parseInt(deviceData.work.replace(/\D/g, ''));
+            const totalMin = workMin + partsMin;
+            const totalMax = workMin + partsMax;
+
+            const totalEl = document.getElementById('calcTotal');
+            if (selectedSymptoms.length === 0) {
+                totalEl.textContent = '—';
+                totalEl.style.color = 'var(--text-muted)';
+            } else {
+                totalEl.textContent = `${totalMin.toLocaleString()} — ${totalMax.toLocaleString()} ₽`;
+                totalEl.style.color = 'var(--primary)';
+            }
+        }
+
+        // Form submission
+        function submitForm() {
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+
+            if (!name || !phone) {
+                alert('Пожалуйста, заполните имя и телефон');
+                return;
+            }
+            if (selectedSymptoms.length === 0) {
+                alert('Выберите хотя бы один симптом');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Заявка отправлена!';
+                btn.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Отправить заявку';
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }, 3000);
+            }, 1500);
+        }
+
+        // Phone mask
+        document.getElementById('userPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value[0] === '7' || value[0] === '8') value = value.substring(1);
+                let formatted = '+7';
+                if (value.length > 0) formatted += ' (' + value.substring(0, 3);
+                if (value.length >= 3) formatted += ') ' + value.substring(3, 6);
+                if (value.length >= 6) formatted += '-' + value.substring(6, 8);
+                if (value.length >= 8) formatted += '-' + value.substring(8, 10);
+                e.target.value = formatted;
+            }
+        });
+
+        // Initialize
+        updateCalculator();
+    </script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+</html>

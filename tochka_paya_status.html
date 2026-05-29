@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статус ремонта — Точка Пая</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #00a8cc;
+            --accent: #ff6b35;
+            --bg: #0a0e17;
+            --bg-light: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.1);
+            --glass: rgba(17, 24, 39, 0.6);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 4px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active { color: var(--primary); }
+        .nav-links a.active::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            padding: 10rem 5% 3rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .page-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Search Box */
+        .search-section {
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            padding: 0 5%;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.75rem;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .search-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 0.8rem 1rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Order Card */
+        .order-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 5% 4rem;
+        }
+
+        .order-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-id {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .order-id-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.05));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .order-id-text h2 {
+            font-size: 1.4rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .order-id-text span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .order-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        .status-progress {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-done {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .timeline-track {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            height: 4px;
+            background: var(--bg-light);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        .timeline-progress {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 2px;
+            z-index: 1;
+            transition: width 1s ease;
+        }
+
+        .timeline-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 2;
+        }
+
+        .timeline-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .timeline-step:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-dot {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--bg-light);
+            border: 3px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .timeline-step.completed .step-dot {
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            border-color: transparent;
+            color: var(--bg);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .timeline-step.active .step-dot {
+            background: var(--bg);
+            border-color: var(--warning);
+            color: var(--warning);
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(245, 158, 11, 0); }
+        }
+
+        .step-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Order Details Grid */
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: var(--bg-light);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-value {
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .detail-value.price {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* History */
+        .history-section {
+            margin-top: 2rem;
+        }
+
+        .history-title {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .history-title i {
+            color: var(--primary);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .history-item {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            animation: fadeIn 0.5s ease both;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-marker {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary);
+            margin-top: 6px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .history-marker::after {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: calc(100% + 1.25rem);
+            background: var(--border);
+        }
+
+        .history-item:last-child .history-marker::after {
+            display: none;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-text {
+            font-weight: 500;
+        }
+
+        .history-note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Actions */
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        /* Info Section */
+        .info-section {
+            padding: 4rem 5%;
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03), transparent);
+        }
+
+        .info-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .info-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .info-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 53, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 0 auto 1.5rem;
+            border: 1px solid var(--border);
+        }
+
+        .info-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 5%;
+            background: var(--bg-light);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .page-hero h1 { font-size: 2.5rem; }
+            .timeline-steps {
+                gap: 0.5rem;
+            }
+            .step-label {
+                font-size: 0.7rem;
+            }
+            .step-date {
+                font-size: 0.65rem;
+            }
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero h1 { font-size: 2rem; }
+            .search-box {
+                flex-direction: column;
+            }
+            .search-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .timeline-step .step-dot {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+            .order-card {
+                padding: 1.5rem;
+            }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="tochka_paya_index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+            Точка Пая
+        </a>
+        <ul class="nav-links">
+            <li><a href="tochka_paya_index.html">Главная</a></li>
+            <li><a href="tochka_paya_uslugi.html">Услуги</a></li>
+            <li><a href="tochka_paya_diagnostika.html">Диагностика</a></li>
+            <li><a href="tochka_paya_status.html">Статус</a></li>
+            <li><a href="tochka_paya_about.html">О нас</a></li>
+            <li><a href="tochka_paya_shop.html">Магазин</a></li>
+            <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+        </ul>
+        <button class="nav-cta"><i class="fab fa-telegram-plane"></i> Написать</button>
+        <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Статус ремонта</h1>
+        <p>Введите номер заказа, чтобы узнать текущий статус ремонта, сроки готовности и стоимость</p>
+    </section>
+
+    <!-- Search -->
+    <section class="search-section">
+        <div class="search-box">
+            <input type="text" class="search-input" id="orderInput" placeholder="Например: ТП-2026-0042" value="ТП-2026-0042">
+            <button class="search-btn" onclick="searchOrder()">
+                <i class="fas fa-search"></i>
+                Найти
+            </button>
+        </div>
+    </section>
+
+    <!-- Order Card -->
+    <div class="order-container" id="orderResult">
+        <div class="order-card">
+            <div class="order-header">
+                <div class="order-id">
+                    <div class="order-id-icon"><i class="fas fa-mobile-screen"></i></div>
+                    <div class="order-id-text">
+                        <h2>Заказ ТП-2026-0042</h2>
+                        <span>Принят 24 мая 2026 · iPhone 14 Pro</span>
+                    </div>
+                </div>
+                <div class="order-status-badge status-progress">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    В работе
+                </div>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline">
+                <div class="timeline-track"></div>
+                <div class="timeline-progress" style="width: 60%;"></div>
+                <div class="timeline-steps">
+                    <div class="timeline-step completed">
+                        <div class="step-dot"><i class="fas fa-check"></i></div>
+                        <div class="step-label">Принят</div>
+                        <div class="step-date">24 мая</div>
+                    </div>
+                    <div class="timeline-step completed">
+                        <div class="step-dot"><i class="fas fa-search"></i></div>
+                        <div class="step-label">Диагностика</div>
+                        <div class="step-date">24 мая</div>
+                    </div>
+                    <div class="timeline-step active">
+                        <div class="step-dot"><i class="fas fa-wrench"></i></div>
+                        <div class="step-label">В работе</div>
+                        <div class="step-date">25 мая</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-dot"><i class="fas fa-check-circle"></i></div>
+                        <div class="step-label">Готов</div>
+                        <div class="step-date">—</div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-dot"><i class="fas fa-box"></i></div>
+                        <div class="step-label">Выдан</div>
+                        <div class="step-date">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Устройство</span>
+                    <span class="detail-value">iPhone 14 Pro 256GB</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Услуга</span>
+                    <span class="detail-value">Замена экрана + батареи</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Мастер</span>
+                    <span class="detail-value">Алексей К.</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Ориентировочная готовность</span>
+                    <span class="detail-value">26 мая, 18:00</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Гарантия</span>
+                    <span class="detail-value" style="color: var(--success);">90 дней</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Стоимость</span>
+                    <span class="detail-value price">32 400 ₽</span>
+                </div>
+            </div>
+
+            <!-- History -->
+            <div class="history-section">
+                <div class="history-title">
+                    <i class="fas fa-history"></i>
+                    История заказа
+                </div>
+                <div class="history-list">
+                    <div class="history-item">
+                        <div class="history-marker"></div>
+                        <div class="history-content">
+                            <div class="history-date">25 мая 2026, 09:15</div>
+                            <div class="history-text">Ремонт начат</div>
+                            <div class="history-note">Мастер Алексей приступил к замене экрана и батареи</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-marker"></div>
+                        <div class="history-content">
+                            <div class="history-date">24 мая 2026, 16:40</div>
+                            <div class="history-text">Диагностика завершена</div>
+                            <div class="history-note">Подтверждена необходимость замены экрана и батареи. Согласована стоимость.</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-marker"></div>
+                        <div class="history-content">
+                            <div class="history-date">24 мая 2026, 14:20</div>
+                            <div class="history-text">Устройство принято</div>
+                            <div class="history-note">Клиент передал устройство в пункт приёма на ул. Ленина, 42</div>
+                        </div>
+                    </div>
+                    <div class="history-item">
+                        <div class="history-marker"></div>
+                        <div class="history-content">
+                            <div class="history-date">24 мая 2026, 11:05</div>
+                            <div class="history-text">Заявка создана</div>
+                            <div class="history-note">Онлайн-заявка через форму диагностики. Предварительная оценка: 28 000 — 35 000 ₽</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="order-actions">
+                <button class="btn-primary">
+                    <i class="fas fa-comment-dots"></i>
+                    Написать мастеру
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-file-invoice"></i>
+                    Скачать квитанцию
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Адрес пункта выдачи
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <h2 class="reveal">Как отследить заказ</h2>
+        <div class="info-grid">
+            <div class="info-card reveal">
+                <div class="info-icon"><i class="fas fa-receipt"></i></div>
+                <h3>Номер в квитанции</h3>
+                <p>Номер заказа указан в верхней части квитанции, которую вы получили при сдаче устройства</p>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-icon"><i class="fas fa-envelope"></i></div>
+                <h3>В SMS и email</h3>
+                <p>Мы отправляем номер заказа в SMS-подтверждении и на вашу почту сразу после приёма</p>
+            </div>
+            <div class="info-card reveal">
+                <div class="info-icon"><i class="fas fa-bell"></i></div>
+                <h3>Уведомления</h3>
+                <p>При смене статуса вы получаете автоматическое уведомление в Telegram или WhatsApp</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="tochka_paya_index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+                    Точка Пая
+                </a>
+                <p>Современный сервисный центр по ремонту электроники. Работаем с 2019 года, чиним всё — от наушников до игровых станций.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Услуги</h4>
+                <ul>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт смартфонов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт ноутбуков</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт планшетов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Игровые приставки</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="tochka_paya_about.html">О нас</a></li>
+                    <li><a href="tochka_paya_about.html#team">Мастера</a></li>
+                    <li><a href="tochka_paya_index.html#reviews">Отзывы</a></li>
+                    <li><a href="tochka_paya_contacts.html">Вакансии</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Помощь</h4>
+                <ul>
+                    <li><a href="tochka_paya_status.html">Статус ремонта</a></li>
+                    <li><a href="tochka_paya_contacts.html">Гарантия</a></li>
+                    <li><a href="tochka_paya_contacts.html">Доставка</a></li>
+                    <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Точка Пая. Все права защищены.</div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Search order
+        function searchOrder() {
+            const input = document.getElementById('orderInput');
+            const btn = document.querySelector('.search-btn');
+            const originalText = btn.innerHTML;
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Поиск...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+
+                const result = document.getElementById('orderResult');
+                result.style.opacity = '0';
+                result.style.transform = 'translateY(20px)';
+                result.style.transition = 'all 0.5s ease';
+
+                setTimeout(() => {
+                    result.style.opacity = '1';
+                    result.style.transform = 'translateY(0)';
+                }, 100);
+            }, 800);
+        }
+
+        // Enter key search
+        document.getElementById('orderInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchOrder();
+            }
+        });
+    </script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+</html>

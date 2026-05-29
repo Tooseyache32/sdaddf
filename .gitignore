@@ -1,0 +1,4 @@
+node_modules/
+db/tochka_paya.db
+db/tochka_paya.db-wal
+db/tochka_paya.db-shm

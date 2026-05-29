@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакты — Точка Пая</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #00a8cc;
+            --accent: #ff6b35;
+            --bg: #0a0e17;
+            --bg-light: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.1);
+            --glass: rgba(17, 24, 39, 0.6);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 4px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a.active { color: var(--primary); }
+        .nav-links a.active::after { width: 100%; }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            padding: 10rem 5% 3rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .page-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Contact Grid */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5% 4rem;
+        }
+
+        /* Contact Cards */
+        .contact-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .contact-card:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .contact-card h3 i {
+            color: var(--primary);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0, 212, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .contact-info {
+            flex: 1;
+        }
+
+        .contact-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.2rem;
+        }
+
+        .contact-value {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a.contact-value:hover {
+            color: var(--primary);
+        }
+
+        .contact-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* Locations */
+        .locations-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .location-card:hover, .location-card.active {
+            border-color: var(--primary);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .location-card.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 16px 16px 0 0;
+        }
+
+        .location-name {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location-name i {
+            color: var(--primary);
+        }
+
+        .location-address {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .location-hours {
+            font-size: 0.85rem;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        /* Map Placeholder */
+        .map-container {
+            width: 100%;
+            height: 300px;
+            background: var(--bg-light);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .map-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                linear-gradient(90deg, var(--border) 1px, transparent 1px),
+                linear-gradient(var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.5;
+        }
+
+        .map-pin {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+            animation: pinBounce 2s ease-in-out infinite;
+        }
+
+        .map-pin i {
+            transform: rotate(45deg);
+            font-size: 1.5rem;
+            color: var(--bg);
+        }
+
+        @keyframes pinBounce {
+            0%, 100% { transform: rotate(-45deg) translateY(0); }
+            50% { transform: rotate(-45deg) translateY(-10px); }
+        }
+
+        .map-label {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Courier Form */
+        .courier-form {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+        }
+
+        .courier-form h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .courier-form > p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 1.2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Social Section */
+        .social-section {
+            padding: 4rem 5%;
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03), transparent);
+        }
+
+        .social-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .social-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .social-header p {
+            color: var(--text-muted);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .social-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .social-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.15);
+        }
+
+        .social-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .social-card.telegram i { color: #229ed9; }
+        .social-card.whatsapp i { color: #25d366; }
+        .social-card.vk i { color: #0077ff; }
+        .social-card.youtube i { color: #ff0000; }
+
+        .social-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .social-card span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* FAQ */
+        .faq-section {
+            padding: 4rem 5%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .faq-header h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-header p {
+            color: var(--text-muted);
+        }
+
+        .faq-item {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .faq-item:hover {
+            border-color: rgba(0, 212, 255, 0.2);
+        }
+
+        .faq-question {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .faq-question i {
+            color: var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .faq-item.open .faq-answer {
+            max-height: 200px;
+            padding: 0 1.5rem 1.25rem;
+        }
+
+        .faq-answer p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 5%;
+            background: var(--bg-light);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+            }
+            .locations-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .social-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .page-hero h1 { font-size: 2.5rem; }
+            .locations-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero h1 { font-size: 2rem; }
+            .social-grid { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="tochka_paya_index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+            Точка Пая
+        </a>
+        <ul class="nav-links">
+            <li><a href="tochka_paya_index.html">Главная</a></li>
+            <li><a href="tochka_paya_uslugi.html">Услуги</a></li>
+            <li><a href="tochka_paya_diagnostika.html">Диагностика</a></li>
+            <li><a href="tochka_paya_status.html">Статус</a></li>
+            <li><a href="tochka_paya_about.html">О нас</a></li>
+            <li><a href="tochka_paya_shop.html">Магазин</a></li>
+            <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+        </ul>
+        <button class="nav-cta"><i class="fab fa-telegram-plane"></i> Написать</button>
+        <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <h1>Контакты</h1>
+        <p>3 пункта приёма в городе, выездной мастер, курьерская доставка. Выбирайте удобный способ связи.</p>
+    </section>
+
+    <!-- Contact Layout -->
+    <div class="contact-layout">
+        <!-- Left: Info -->
+        <div class="contact-info-column">
+            <!-- Phones -->
+            <div class="contact-card reveal">
+                <h3><i class="fas fa-phone-alt"></i> Телефоны</h3>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-headset"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">Горячая линия (круглосуточно)</div>
+                        <a href="tel:+79991234567" class="contact-value">+7 (999) 123-45-67</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-wrench"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">Сервисный отдел</div>
+                        <a href="tel:+79991234568" class="contact-value">+7 (999) 123-45-68</a>
+                        <div class="contact-note">Пн–Пт 09:00–21:00, Сб–Вс 10:00–20:00</div>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-truck"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">Курьерская служба</div>
+                        <a href="tel:+79991234569" class="contact-value">+7 (999) 123-45-69</a>
+                        <div class="contact-note">Ежедневно 08:00–22:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="contact-card reveal">
+                <h3><i class="fas fa-envelope"></i> Email</h3>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-inbox"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">Общие вопросы</div>
+                        <a href="mailto:info@tochkapaya.ru" class="contact-value">info@tochkapaya.ru</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-tools"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">По вопросам ремонта</div>
+                        <a href="mailto:service@tochkapaya.ru" class="contact-value">service@tochkapaya.ru</a>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <div class="contact-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="contact-info">
+                        <div class="contact-label">Для партнёров и B2B</div>
+                        <a href="mailto:partner@tochkapaya.ru" class="contact-value">partner@tochkapaya.ru</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Locations -->
+            <div class="contact-card reveal">
+                <h3><i class="fas fa-map-marker-alt"></i> Пункты приёма</h3>
+                <div class="locations-grid">
+                    <div class="location-card active" onclick="selectLocation(this, 0)">
+                        <div class="location-name"><i class="fas fa-store"></i> Центральный</div>
+                        <div class="location-address">ул. Ленина, 42, ТЦ «Галерея», 3 этаж</div>
+                        <div class="location-hours"><i class="fas fa-clock"></i> Пн–Вс 09:00–21:00</div>
+                    </div>
+                    <div class="location-card" onclick="selectLocation(this, 1)">
+                        <div class="location-name"><i class="fas fa-store"></i> Северный</div>
+                        <div class="location-address">пр. Мира, 128, ТЦ «Север», 1 этаж</div>
+                        <div class="location-hours"><i class="fas fa-clock"></i> Пн–Вс 10:00–22:00</div>
+                    </div>
+                    <div class="location-card" onclick="selectLocation(this, 2)">
+                        <div class="location-name"><i class="fas fa-store"></i> Южный</div>
+                        <div class="location-address">ул. Гагарина, 15, ТЦ «Южный парк», 2 этаж</div>
+                        <div class="location-hours"><i class="fas fa-clock"></i> Пн–Вс 10:00–21:00</div>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <div class="map-pin"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="map-label">ул. Ленина, 42 — Центральный пункт приёма</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Courier Form -->
+        <div class="courier-column">
+            <div class="courier-form reveal">
+                <h3><i class="fas fa-truck-fast" style="color: var(--primary); margin-right: 0.5rem;"></i>Вызвать курьера</h3>
+                <p>Заберём устройство из дома или офиса. Бесплатно при заказе от 3000 ₽.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Ваше имя</label>
+                    <input type="text" class="form-input" id="courierName" placeholder="Александр">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Телефон</label>
+                    <input type="tel" class="form-input" id="courierPhone" placeholder="+7 (999) 000-00-00">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Адрес забора</label>
+                    <input type="text" class="form-input" id="courierAddress" placeholder="ул. Пушкина, д. 10, кв. 25">
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label class="form-label">Дата</label>
+                        <input type="date" class="form-input" id="courierDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Время</label>
+                        <select class="form-select" id="courierTime">
+                            <option>09:00–12:00</option>
+                            <option>12:00–15:00</option>
+                            <option>15:00–18:00</option>
+                            <option>18:00–21:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Что чиним?</label>
+                    <select class="form-select" id="courierDevice">
+                        <option>Выберите устройство</option>
+                        <option>Смартфон</option>
+                        <option>Ноутбук</option>
+                        <option>Планшет</option>
+                        <option>Приставка</option>
+                        <option>Наушники</option>
+                        <option>Другое</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Описание проблемы</label>
+                    <textarea class="form-textarea" id="courierDesc" placeholder="Кратко опишите, что случилось..."></textarea>
+                </div>
+
+                <button class="submit-btn" onclick="submitCourier()">
+                    <i class="fas fa-paper-plane"></i>
+                    Вызвать курьера
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Social -->
+    <section class="social-section">
+        <div class="social-header reveal">
+            <h2>Мы в соцсетях</h2>
+            <p>Подписывайтесь — публикуем лайфхаки, разборки и акции</p>
+        </div>
+        <div class="social-grid">
+            <a href="https://t.me/tochkapaya" class="social-card telegram reveal" target="_blank" rel="noopener">
+                <i class="fab fa-telegram"></i>
+                <h3>Telegram</h3>
+                <span>@tochkapaya</span>
+            </a>
+            <a href="https://wa.me/79991234567" class="social-card whatsapp reveal" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i>
+                <h3>WhatsApp</h3>
+                <span>+7 (999) 123-45-67</span>
+            </a>
+            <a href="https://vk.com/tochkapaya" class="social-card vk reveal" target="_blank" rel="noopener">
+                <i class="fab fa-vk"></i>
+                <h3>ВКонтакте</h3>
+                <span>vk.com/tochkapaya</span>
+            </a>
+            <a href="https://youtube.com/@tochkapaya" class="social-card youtube reveal" target="_blank" rel="noopener">
+                <i class="fab fa-youtube"></i>
+                <h3>YouTube</h3>
+                <span>Точка Пая TV</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section" id="faq">
+        <div class="faq-header reveal">
+            <h2>Частые вопросы</h2>
+            <p>Ответы на самые популярные вопросы о доставке и приёме</p>
+        </div>
+        <div class="faq-list">
+            <div class="faq-item reveal" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Сколько стоит вызов курьера?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Бесплатно при заказе ремонта от 3000 ₽. Если сумма ремонта меньше — 500 ₽ в пределах города. За город — по договорённости.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Можно ли привезти устройство лично?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Конечно! У нас 3 пункта приёма в разных районах города. Работаем без выходных, записываться не обязательно — но если хотите сократить ожидание, лучше оформить заявку онлайн.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Как долго ждать курьера?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>В день заказа — в течение 2 часов в выбранном интервале. Если заказали на завтра — точно ко времени. Курьер позвонит за 30 минут до приезда.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Как оплатить ремонт?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Наличными, картой, СБП или онлайн-переводом. Оплата после ремонта и вашей проверки устройства. Никакой предоплаты.</p>
+                </div>
+            </div>
+            <div class="faq-item reveal" onclick="toggleFaq(this)">
+                <div class="faq-question">
+                    Что если ремонт не понадобится?
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Если после диагностики вы решите не ремонтировать — заберём устройство обратно бесплатно. Диагностика тоже бесплатна.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="tochka_paya_index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+                    Точка Пая
+                </a>
+                <p>Современный сервисный центр по ремонту электроники. Работаем с 2019 года, чиним всё — от наушников до игровых станций.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Услуги</h4>
+                <ul>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт смартфонов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт ноутбуков</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт планшетов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Игровые приставки</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="tochka_paya_about.html">О нас</a></li>
+                    <li><a href="#">Мастера</a></li>
+                    <li><a href="tochka_paya_index.html#reviews">Отзывы</a></li>
+                    <li><a href="#">Вакансии</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Помощь</h4>
+                <ul>
+                    <li><a href="tochka_paya_status.html">Статус ремонта</a></li>
+                    <li><a href="#">Гарантия</a></li>
+                    <li><a href="#">Доставка</a></li>
+                    <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Точка Пая. Все права защищены.</div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Location selector
+        const locations = [
+            'ул. Ленина, 42 — Центральный пункт приёма',
+            'пр. Мира, 128 — Северный пункт приёма',
+            'ул. Гагарина, 15 — Южный пункт приёма'
+        ];
+
+        function selectLocation(el, index) {
+            document.querySelectorAll('.location-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelector('.map-label').textContent = locations[index];
+        }
+
+        // Phone mask
+        document.getElementById('courierPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value[0] === '7' || value[0] === '8') value = value.substring(1);
+                let formatted = '+7';
+                if (value.length > 0) formatted += ' (' + value.substring(0, 3);
+                if (value.length >= 3) formatted += ') ' + value.substring(3, 6);
+                if (value.length >= 6) formatted += '-' + value.substring(6, 8);
+                if (value.length >= 8) formatted += '-' + value.substring(8, 10);
+                e.target.value = formatted;
+            }
+        });
+
+        // Courier submit
+        function submitCourier() {
+            const btn = document.querySelector('.submit-btn');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fas fa-check"></i> Курьер вызван!';
+                btn.style.background = 'linear-gradient(135deg, var(--success), #16a34a)';
+
+                setTimeout(() => {
+                    btn.innerHTML = original;
+                    btn.disabled = false;
+                    btn.style.background = '';
+                }, 3000);
+            }, 1500);
+        }
+
+        // FAQ toggle
+        function toggleFaq(item) {
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(f => f.classList.remove('open'));
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        }
+
+        // Set default date to tomorrow
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        document.getElementById('courierDate').valueAsDate = tomorrow;
+    </script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+</html>

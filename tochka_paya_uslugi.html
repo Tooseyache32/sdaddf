@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Услуги и цены — Точка Пая</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #00a8cc;
+            --accent: #ff6b35;
+            --bg: #0a0e17;
+            --bg-light: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.1);
+            --glass: rgba(17, 24, 39, 0.6);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary-dark); border-radius: 4px; }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 23, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 0.8rem 5%;
+            background: rgba(10, 14, 23, 0.95);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--bg);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+        .nav-links a:hover::after { width: 100%; }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Page Hero */
+        .page-hero {
+            padding: 10rem 5% 5rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .page-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-hero p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .breadcrumb {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumb a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumb .current {
+            color: var(--primary);
+        }
+
+        /* Category Filter */
+        .categories {
+            padding: 2rem 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .cat-tab {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.8rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .cat-tab:hover {
+            border-color: var(--primary);
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .cat-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            border-color: transparent;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .cat-tab i {
+            font-size: 1.1rem;
+        }
+
+        /* Brand Filter */
+        .brands-section {
+            padding: 0 5% 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .brands-grid {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .brand-chip {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.6rem 1.4rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .brand-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .brand-chip.active {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Price Table */
+        .price-section {
+            padding: 2rem 5% 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .price-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 120px;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: var(--bg-light);
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid var(--border);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .price-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 120px;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            align-items: center;
+            transition: all 0.3s;
+            animation: fadeIn 0.5s ease both;
+        }
+
+        .price-row:hover {
+            background: rgba(0, 212, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .price-row.hidden {
+            display: none;
+        }
+
+        .service-name {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .service-name strong {
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+
+        .service-name span {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .service-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .service-time {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .service-time i {
+            color: var(--warning);
+            font-size: 0.8rem;
+        }
+
+        .service-warranty {
+            color: var(--success);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .service-warranty i {
+            font-size: 0.8rem;
+        }
+
+        .order-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .order-btn:hover {
+            background: var(--primary);
+            color: var(--bg);
+            transform: scale(1.05);
+        }
+
+        /* Popular Services Cards */
+        .popular-services {
+            padding: 4rem 5%;
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03), transparent);
+        }
+
+        .popular-services h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .popular-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .popular-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+        }
+
+        .popular-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+        }
+
+        .popular-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .popular-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--accent);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .popular-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .popular-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .popular-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popular-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .popular-price span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 5%;
+        }
+
+        .cta-box {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 107, 53, 0.1));
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 30px;
+            padding: 3rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-box h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-box p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--bg);
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 5%;
+            background: var(--bg-light);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            color: var(--bg);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .price-header, .price-row {
+                grid-template-columns: 2fr 1fr 1fr 100px;
+            }
+            .service-warranty { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .page-hero h1 { font-size: 2.5rem; }
+            .price-header { display: none; }
+            .price-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+                padding: 1.5rem;
+                border-radius: 12px;
+                margin-bottom: 1rem;
+                border: 1px solid var(--border);
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .category-tabs {
+                gap: 0.5rem;
+            }
+            .cat-tab {
+                padding: 0.8rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-hero h1 { font-size: 2rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .cta-box { padding: 2rem 1.5rem; }
+            .popular-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="tochka_paya_index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+            Точка Пая
+        </a>
+        <ul class="nav-links">
+            <li><a href="tochka_paya_index.html">Главная</a></li>
+            <li><a href="tochka_paya_uslugi.html">Услуги</a></li>
+            <li><a href="tochka_paya_diagnostika.html">Диагностика</a></li>
+            <li><a href="tochka_paya_status.html">Статус</a></li>
+            <li><a href="tochka_paya_about.html">О нас</a></li>
+            <li><a href="tochka_paya_shop.html">Магазин</a></li>
+            <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+        </ul>
+        <button class="nav-cta"><i class="fab fa-telegram-plane"></i> Написать</button>
+        <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="breadcrumb">
+            <a href="tochka_paya_index.html">Главная</a>
+            <span>/</span>
+            <span class="current">Услуги и цены</span>
+        </div>
+        <h1>Услуги и цены</h1>
+        <p>Прозрачное ценообразование без скрытых платежей. Все цены окончательные — включают работу и запчасти.</p>
+    </section>
+
+    <!-- Category Filter -->
+    <section class="categories">
+        <div class="category-tabs">
+            <button class="cat-tab active" data-category="all">
+                <i class="fas fa-border-all"></i>
+                Все услуги
+            </button>
+            <button class="cat-tab" data-category="phone">
+                <i class="fas fa-mobile-screen"></i>
+                Смартфоны
+            </button>
+            <button class="cat-tab" data-category="laptop">
+                <i class="fas fa-laptop"></i>
+                Ноутбуки
+            </button>
+            <button class="cat-tab" data-category="tablet">
+                <i class="fas fa-tablet-screen-button"></i>
+                Планшеты
+            </button>
+            <button class="cat-tab" data-category="console">
+                <i class="fas fa-gamepad"></i>
+                Приставки
+            </button>
+            <button class="cat-tab" data-category="audio">
+                <i class="fas fa-headphones"></i>
+                Аудио
+            </button>
+        </div>
+    </section>
+
+    <!-- Brand Filter -->
+    <section class="brands-section">
+        <div class="section-label">Популярные бренды</div>
+        <div class="brands-grid">
+            <button class="brand-chip active" data-brand="all">Все бренды</button>
+            <button class="brand-chip" data-brand="apple">Apple</button>
+            <button class="brand-chip" data-brand="samsung">Samsung</button>
+            <button class="brand-chip" data-brand="xiaomi">Xiaomi</button>
+            <button class="brand-chip" data-brand="asus">ASUS</button>
+            <button class="brand-chip" data-brand="sony">Sony</button>
+            <button class="brand-chip" data-brand="huawei">Huawei</button>
+            <button class="brand-chip" data-brand="google">Google Pixel</button>
+        </div>
+    </section>
+
+    <!-- Price Table -->
+    <section class="price-section">
+        <div class="price-header">
+            <div>Услуга</div>
+            <div>Стоимость</div>
+            <div>Срок</div>
+            <div>Гарантия</div>
+            <div></div>
+        </div>
+
+        <!-- Phones -->
+        <div class="price-row" data-category="phone" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена экрана iPhone 15 / 15 Plus</strong>
+                <span>Оригинальный OLED дисплей, калибровка True Tone</span>
+            </div>
+            <div class="service-price">24 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 45 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена экрана iPhone 14 Pro / Pro Max</strong>
+                <span>OLED Super Retina XDR, Dynamic Island</span>
+            </div>
+            <div class="service-price">28 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 50 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена батареи iPhone (все модели)</strong>
+                <span>Ёмкость 100%, калибровка циклов заряда</span>
+            </div>
+            <div class="service-price">4 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 25 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="samsung">
+            <div class="service-name">
+                <strong>Замена экрана Samsung Galaxy S24 Ultra</strong>
+                <span>AMOLED 2X 120Hz, встроенный S Pen</span>
+            </div>
+            <div class="service-price">32 000 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 60 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="samsung">
+            <div class="service-name">
+                <strong>Замена стекла Samsung (Flip/Fold)</strong>
+                <span>Гибкое стекло UTG, сохранение водозащиты</span>
+            </div>
+            <div class="service-price">18 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 60 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="xiaomi">
+            <div class="service-name">
+                <strong>Замена экрана Xiaomi 14 / 14 Pro</strong>
+                <span>AMOLED 120Hz, защита Gorilla Glass Victus 2</span>
+            </div>
+            <div class="service-price">12 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 40 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="all">
+            <div class="service-name">
+                <strong>Ремонт после воды (смартфон)</strong>
+                <span>Ультразвуковая чистка, замена окислов, восстановление данных</span>
+            </div>
+            <div class="service-price">от 3 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> от 2 часов</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 30 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="phone" data-brand="all">
+            <div class="service-name">
+                <strong>Замена разъёма зарядки</strong>
+                <span>Type-C / Lightning, пайка на плату</span>
+            </div>
+            <div class="service-price">2 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 30 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <!-- Laptops -->
+        <div class="price-row" data-category="laptop" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена экрана MacBook Air M2/M3</strong>
+                <span>Liquid Retina 13.6", калибровка цветопередачи</span>
+            </div>
+            <div class="service-price">45 000 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 3 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="laptop" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена батареи MacBook (все модели)</strong>
+                <span>Оригинальный аккумулятор, цикл калибровки</span>
+            </div>
+            <div class="service-price">8 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1 час</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="laptop" data-brand="apple">
+            <div class="service-name">
+                <strong>Ремонт после воды MacBook</strong>
+                <span>Чистка платы, реболлинг чипов, восстановление данных</span>
+            </div>
+            <div class="service-price">от 12 000 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> от 1 дня</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 60 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="laptop" data-brand="asus">
+            <div class="service-name">
+                <strong>Чистка ноутбука от пыли + замена термопасты</strong>
+                <span>ASUS ROG, TUF, VivoBook, ZenBook</span>
+            </div>
+            <div class="service-price">3 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1.5 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 30 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="laptop" data-brand="all">
+            <div class="service-name">
+                <strong>Замена клавиатуры ноутбука</strong>
+                <span>Все бренды, подсветка, русская/английская раскладка</span>
+            </div>
+            <div class="service-price">от 4 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="laptop" data-brand="all">
+            <div class="service-name">
+                <strong>Апгрейд SSD / RAM</strong>
+                <span>Установка накопителя M.2 NVMe, DDR4/DDR5</span>
+            </div>
+            <div class="service-price">от 1 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 30 мин</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <!-- Tablets -->
+        <div class="price-row" data-category="tablet" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена экрана iPad Pro 12.9" M2</strong>
+                <span>Mini-LED Liquid Retina XDR, ProMotion 120Hz</span>
+            </div>
+            <div class="service-price">38 000 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="tablet" data-brand="samsung">
+            <div class="service-name">
+                <strong>Замена экрана Samsung Galaxy Tab S9 Ultra</strong>
+                <span>Super AMOLED 14.6", 120Hz, S Pen</span>
+            </div>
+            <div class="service-price">28 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="tablet" data-brand="huawei">
+            <div class="service-name">
+                <strong>Замена экрана Huawei MatePad Pro</strong>
+                <span>OLED 120Hz, M-Pencil поддержка</span>
+            </div>
+            <div class="service-price">15 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1.5 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <!-- Consoles -->
+        <div class="price-row" data-category="console" data-brand="sony">
+            <div class="service-name">
+                <strong>Замена HDMI порта PlayStation 5</strong>
+                <span>Пайка нового разъёма, тест 4K@120Hz</span>
+            </div>
+            <div class="service-price">4 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 3 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="console" data-brand="all">
+            <div class="service-name">
+                <strong>Профилактика PS5 / Xbox Series X</strong>
+                <span>Чистка от пыли, замена термопасты, новая жидкий металл</span>
+            </div>
+            <div class="service-price">3 900 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 30 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="console" data-brand="all">
+            <div class="service-name">
+                <strong>Ремонт Nintendo Switch (не заряжается)</strong>
+                <span>Замена порта USB-C, M92T36, BQ24193</span>
+            </div>
+            <div class="service-price">3 200 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 2 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 90 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <!-- Audio -->
+        <div class="price-row" data-category="audio" data-brand="apple">
+            <div class="service-name">
+                <strong>Замена батареи AirPods Pro 2</strong>
+                <span>Обе батареи в кейсе и наушниках, калибровка</span>
+            </div>
+            <div class="service-price">3 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1 час</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 60 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="audio" data-brand="sony">
+            <div class="service-name">
+                <strong>Ремонт Sony WH-1000XM5</strong>
+                <span>Замена динамика, шлейфа, регулировка оголовья</span>
+            </div>
+            <div class="service-price">от 2 500 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1.5 часа</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 60 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+
+        <div class="price-row" data-category="audio" data-brand="all">
+            <div class="service-name">
+                <strong>Ремонт портативных колонок JBL / Marshall</strong>
+                <span>Замена динамика, аккумулятора, платы управления</span>
+            </div>
+            <div class="service-price">от 2 000 ₽</div>
+            <div class="service-time"><i class="fas fa-clock"></i> 1 час</div>
+            <div class="service-warranty"><i class="fas fa-shield-alt"></i> 60 дней</div>
+            <button class="order-btn">Заказать</button>
+        </div>
+    </section>
+
+    <!-- Popular Services -->
+    <section class="popular-services">
+        <h2 class="reveal">Самые популярные услуги</h2>
+        <div class="popular-grid">
+            <div class="popular-card reveal">
+                <div class="popular-badge">Хит</div>
+                <i class="fas fa-mobile-screen" style="font-size: 2rem; color: var(--primary);"></i>
+                <h3>Замена экрана iPhone</h3>
+                <p>От iPhone 11 до 15 Pro Max. Оригинальные OLED и качественные аналоги. True Tone сохраняем.</p>
+                <div class="popular-meta">
+                    <div class="popular-price">от 7 900 ₽ <span>· 40 мин</span></div>
+                    <button class="order-btn">Заказать</button>
+                </div>
+            </div>
+
+            <div class="popular-card reveal">
+                <div class="popular-badge">Срочно</div>
+                <i class="fas fa-droplet" style="font-size: 2rem; color: var(--accent);"></i>
+                <h3>Ремонт после воды</h3>
+                <p>Чистка в ультразвуковой ванне, замена всех окислов, восстановление данных. Спасаем 9 из 10.</p>
+                <div class="popular-meta">
+                    <div class="popular-price">от 3 500 ₽ <span>· от 2 часов</span></div>
+                    <button class="order-btn">Заказать</button>
+                </div>
+            </div>
+
+            <div class="popular-card reveal">
+                <div class="popular-badge">Выгода</div>
+                <i class="fas fa-battery-full" style="font-size: 2rem; color: var(--success);"></i>
+                <h3>Замена батареи</h3>
+                <p>Все модели iPhone, Samsung, Xiaomi. Ёмкость 100%, калибровка циклов. Гарантия 90 дней.</p>
+                <div class="popular-meta">
+                    <div class="popular-price">от 1 500 ₽ <span>· 25 мин</span></div>
+                    <button class="order-btn">Заказать</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-box reveal">
+            <h2>Не нашли нужную услугу?</h2>
+            <p>Опишите проблему — мы бесплатно проконсультируем и назовём точную стоимость ремонта.</p>
+            <a href="tochka_paya_diagnostika.html" class="btn-primary">
+                <i class="fas fa-comment-dots"></i>
+                Бесплатная консультация
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="tochka_paya_index.html" class="logo">
+                    <div class="logo-icon"><i class="fas fa-microchip"></i></div>
+                    Точка Пая
+                </a>
+                <p>Современный сервисный центр по ремонту электроники. Работаем с 2019 года, чиним всё — от наушников до игровых станций.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Услуги</h4>
+                <ul>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт смартфонов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт ноутбуков</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Ремонт планшетов</a></li>
+                    <li><a href="tochka_paya_uslugi.html">Игровые приставки</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="tochka_paya_about.html">О нас</a></li>
+                    <li><a href="tochka_paya_about.html#team">Мастера</a></li>
+                    <li><a href="tochka_paya_index.html#reviews">Отзывы</a></li>
+                    <li><a href="tochka_paya_contacts.html">Вакансии</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Помощь</h4>
+                <ul>
+                    <li><a href="tochka_paya_status.html">Статус ремонта</a></li>
+                    <li><a href="tochka_paya_contacts.html">Гарантия</a></li>
+                    <li><a href="tochka_paya_contacts.html">Доставка</a></li>
+                    <li><a href="tochka_paya_contacts.html">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 Точка Пая. Все права защищены.</div>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-telegram"></i></a>
+                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                <a href="#"><i class="fab fa-vk"></i></a>
+                <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll reveal animation
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Category filter
+        const catTabs = document.querySelectorAll('.cat-tab');
+        const brandChips = document.querySelectorAll('.brand-chip');
+        const priceRows = document.querySelectorAll('.price-row');
+
+        let activeCategory = 'all';
+        let activeBrand = 'all';
+
+        function filterRows() {
+            priceRows.forEach(row => {
+                const rowCategory = row.getAttribute('data-category');
+                const rowBrand = row.getAttribute('data-brand');
+
+                const categoryMatch = activeCategory === 'all' || rowCategory === activeCategory;
+                const brandMatch = activeBrand === 'all' || rowBrand === activeBrand || rowBrand === 'all';
+
+                if (categoryMatch && brandMatch) {
+                    row.classList.remove('hidden');
+                    row.style.animation = 'none';
+                    row.offsetHeight; /* trigger reflow */
+                    row.style.animation = 'fadeIn 0.5s ease both';
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+        }
+
+        catTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                catTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                activeCategory = tab.getAttribute('data-category');
+                filterRows();
+            });
+        });
+
+        brandChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                brandChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                activeBrand = chip.getAttribute('data-brand');
+                filterRows();
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+    <script src="assets/js/app.js"></script>
+
+</body>
+</html>
